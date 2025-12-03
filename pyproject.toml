@@ -16,4 +16,5 @@ module-root = "src"
 
 [project.scripts]
 day1 = "adventofcode2025.day1.main:main"
+day2 = "adventofcode2025.day2.main:main"
 day3 = "adventofcode2025.day3.main:main"

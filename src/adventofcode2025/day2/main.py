@@ -69,7 +69,7 @@ def is_invalid(n: int) -> bool:
 
 
 def main():
-    invalid_ids = []
+    invalid_ids: list[int] = []
     for rangestr in DATA:
         for number in get_range(
             rangestr
