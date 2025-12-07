@@ -4,10 +4,7 @@
 # didnt bother too much with OOPing this one
 # seems the main trick is knowing you can make a matrix and transpose it to get the expressions
 from adventofcode2025.day6.input import HOMEWORK
-from typing import TypeVar, Sequence
 import numpy as np
-
-T = TypeVar("T")
 
 example = [
     "123 328  51 64 ",
@@ -15,19 +12,6 @@ example = [
     "  6 98  215 314",
     "*   +   *   +  ",
 ]
-
-
-def transpose(matrix: Sequence[Sequence[T]]) -> list[list[T]]:
-    if not matrix:
-        return []
-    rows = len(matrix)
-    cols = len(matrix[0])
-
-    transposed: list[list[T]] = [[] for _ in range(cols)]
-    for row in range(rows):
-        for col in range(cols):
-            transposed[col].append(matrix[row][col])
-    return transposed
 
 
 def part1():
@@ -58,7 +42,7 @@ def main():
         grid.append(list(row))
     # array = np.array(grid)
     # array = array.transpose()
-    # rewrote to not use numpy and also without the zip trick for my own practice
+    # rewrote to not use numpy and also without the zip trick for my own practice (utils module)
     array = zip(*grid, strict=True)
     # array = transpose(grid)
 
