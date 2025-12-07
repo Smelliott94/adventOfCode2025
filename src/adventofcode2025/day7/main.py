@@ -5,6 +5,9 @@
 
 # in part 2, instead of editing the registry in place when a splitter is hit, it splits the timeline
 # we can go left on the exiting registry, then create a copy of the registry which goes right from that point
+# No we can't
+# it's a graph problem where we need to find how many paths exist
+# can apparently be solved with BFS or DFS, learning more about them first before implementing
 
 from typing import Literal, TypeAlias, override
 from adventofcode2025.day7.input import TOTALLY_NOT_XMAS_TREE
