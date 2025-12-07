@@ -93,9 +93,7 @@ class Minegrid:
                     # Coordinates outside bounds, we don't care
                     pass
 
-    def grid_state_as_str_list(
-        self, recently_removed_coords: list[Coord] = []
-    ) -> list[str]:
+    def grid_state_as_str_list(self, recently_removed_coords: list[Coord] = []) -> list[str]:
         """Go through coordinates
         make a string which has @ if there's a mine or . if there isnt
         chunk the string into the right width
@@ -135,14 +133,10 @@ def main():
         for coord in coords_to_remove:
             grid.remove_mine(coord)
 
-        frames.append(
-            grid.grid_state_as_str_list(recently_removed_coords=coords_to_remove)
-        )
+        frames.append(grid.grid_state_as_str_list(recently_removed_coords=coords_to_remove))
         if answer == last_answer:
             improvable = False
-            frames.append(
-                grid.grid_state_as_str_list(recently_removed_coords=coords_to_remove)
-            )
+            frames.append(grid.grid_state_as_str_list(recently_removed_coords=coords_to_remove))
     play_ascii_frames(frames)
     print(answer)
 

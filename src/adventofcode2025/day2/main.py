@@ -58,9 +58,7 @@ def is_invalid(n: int) -> bool:
         return False
 
     for num_of_chunks in range(2, n_len + 1):
-        if (
-            not (n_len % num_of_chunks) == 0
-        ):  # can't be a repeating pattern if it doesn't have same length
+        if not (n_len % num_of_chunks) == 0:  # can't be a repeating pattern if it doesn't have same length
             continue
         chunks = split_evenly(ns, num_of_chunks)
         if len(set(chunks)) == 1:
@@ -71,9 +69,7 @@ def is_invalid(n: int) -> bool:
 def main():
     invalid_ids: list[int] = []
     for rangestr in DATA:
-        for number in get_range(
-            rangestr
-        ):  # get the range of numbers indicated by the string
+        for number in get_range(rangestr):  # get the range of numbers indicated by the string
             if is_invalid(number):
                 invalid_ids.append(number)
     print(sum(invalid_ids))
