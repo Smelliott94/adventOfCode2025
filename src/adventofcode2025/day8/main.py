@@ -1,8 +1,11 @@
-from collections import Counter
-from typing import NamedTuple
+from collections import defaultdict, deque
+from typing import NamedTuple, override
 import heapq
 
+from adventofcode2025.day8.input import COORDINATES
 
+
+num_of_connections = 1000
 example: list[str] = [
     "162,817,812",
     "57,618,57",
@@ -33,13 +36,37 @@ class Coordinate(NamedTuple):
     z: int
 
 
-# map of coordinates that have a connection
-circuits: dict[Coordinate, set[Coordinate]] = {}
+def merge_connections(pairs: list[tuple[Coordinate, Coordinate]]) -> list[list[Coordinate]]:
+    adj: dict[Coordinate, set[Coordinate]] = defaultdict(set)
+
+    for a, b in pairs:
+        adj[a].add(b)
+        adj[b].add(a)
+
+    visited: set[Coordinate] = set()
+    circuits: list[list[Coordinate]] = []
+
+    for node in adj:
+        if node in visited:
+            continue
+
+        queue = deque([node])
+        visited.add(node)
+        circuit: list[Coordinate] = []
+
+        while queue:
+            cur = queue.popleft()
+            circuit.append(cur)
+            for nxt in adj[cur]:
+                if nxt not in visited:
+                    visited.add(nxt)
+                    queue.append(nxt)
+        circuits.append(circuit)
+    return circuits
 
 
 def main() -> None:
-    input_list: list[str] = example
-    num_of_connections = 10
+    input_list: list[str] = COORDINATES
     coordinates: list[Coordinate] = [Coordinate(*[int(i) for i in row.split(",")]) for row in input_list]
 
     # every coordinate combo
@@ -59,12 +86,19 @@ def main() -> None:
                 _ = heapq.heapreplace(heap, (-distance_squared, (coordA, coordB)))
 
     shortest_connections: list[tuple[int, tuple[Coordinate, Coordinate]]] = heapq.nsmallest(num_of_connections, heap, key=lambda p: -p[0])
-    all_connected_points: list[Coordinate] = []
-    for _, conn in shortest_connections:
-        for point in conn:
-            all_connected_points.append(point)
 
-    print(Counter(all_connected_points))
+    shortest_connections_coords: list[tuple[Coordinate, Coordinate]] = [conn[1] for conn in shortest_connections]
+    print(len(shortest_connections_coords))
+    circuits: list[list[Coordinate]] = merge_connections(shortest_connections_coords)
+
+    circuit_lens = [len(c) for c in circuits]
+    circuit_lens.sort(reverse=True)
+    print(circuit_lens)
+    answer = 1
+    for n in circuit_lens[:3]:
+        print(n)
+        answer *= n
+    print(answer)
 
 
 if __name__ == "__main__":
