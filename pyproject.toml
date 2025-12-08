@@ -15,9 +15,7 @@ module-name = "adventofcode2025"
 module-root = "src"
 
 [dependency-groups]
-dev = [
-    "ruff>=0.14.8",
-]
+dev = ["ruff>=0.14.8"]
 
 [project.scripts]
 day1 = "adventofcode2025.day1.main:main"
@@ -27,3 +25,4 @@ day4 = "adventofcode2025.day4.main:main"
 day5 = "adventofcode2025.day5.main:main"
 day6 = "adventofcode2025.day6.main:main"
 day7 = "adventofcode2025.day7.main:main"
+day8 = "adventofcode2025.day8.main:main"

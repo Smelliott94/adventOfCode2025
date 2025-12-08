@@ -1,5 +1,5 @@
 from collections import defaultdict, deque
-from typing import NamedTuple, override
+from typing import NamedTuple
 import heapq
 
 from adventofcode2025.day8.input import COORDINATES
@@ -65,6 +65,44 @@ def merge_connections(pairs: list[tuple[Coordinate, Coordinate]]) -> list[list[C
     return circuits
 
 
+def find_closing_pair(
+    coordinates: list[Coordinate],
+    ordered_pairs: list[tuple[Coordinate, Coordinate]],
+) -> tuple[Coordinate, Coordinate] | None:
+    """This was all from ChatGPT since i had no idea about graph + cycle detection
+    Could have done part 1 this way instead of BFS also
+    it's called Union-Find
+    """
+    # Disjoint-set (union–find) over the coordinates
+    parent: dict[Coordinate, Coordinate] = {c: c for c in coordinates}
+    comp_count = len(coordinates)
+
+    def find(x: Coordinate) -> Coordinate:
+        # path compression
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: Coordinate, b: Coordinate) -> bool:
+        nonlocal comp_count
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return False  # already in same component; no change
+        parent[rb] = ra
+        comp_count -= 1
+        return True
+
+    for a, b in ordered_pairs:
+        # only count "real" unions that merge two components
+        merged = union(a, b)
+        if merged and comp_count == 1:
+            # this is the first time everything is in one component
+            return (a, b)
+
+    return None  # never became fully connected
+
+
 def main() -> None:
     input_list: list[str] = COORDINATES
     coordinates: list[Coordinate] = [Coordinate(*[int(i) for i in row.split(",")]) for row in input_list]
@@ -78,27 +116,16 @@ def main() -> None:
     heap: list[tuple[int, tuple[Coordinate, Coordinate]]] = []
     for coordA, coordB in all_coord_pairs:
         distance_squared = ((coordB.x - coordA.x) ** 2) + ((coordB.y - coordA.y) ** 2) + ((coordB.z - coordA.z) ** 2)
-        # want to replace largest item so negate distance so heap[0] is the largest distance in the heap
-        if len(heap) < num_of_connections:
-            heapq.heappush(heap, (-distance_squared, (coordA, coordB)))
-        else:
-            if distance_squared < -heap[0][0]:
-                _ = heapq.heapreplace(heap, (-distance_squared, (coordA, coordB)))
+        heap.append((distance_squared, (coordA, coordB)))
 
-    shortest_connections: list[tuple[int, tuple[Coordinate, Coordinate]]] = heapq.nsmallest(num_of_connections, heap, key=lambda p: -p[0])
+    heap.sort(key=lambda p: p[0])
 
-    shortest_connections_coords: list[tuple[Coordinate, Coordinate]] = [conn[1] for conn in shortest_connections]
-    print(len(shortest_connections_coords))
+    shortest_connections_coords: list[tuple[Coordinate, Coordinate]] = [conn[1] for conn in heap]
+    closing_pair = find_closing_pair(coordinates, shortest_connections_coords)
+    print("Closing pair:", closing_pair)
+    print(closing_pair[0].x * closing_pair[1].x)
+    # forms one circuit now since all connections are included
     circuits: list[list[Coordinate]] = merge_connections(shortest_connections_coords)
-
-    circuit_lens = [len(c) for c in circuits]
-    circuit_lens.sort(reverse=True)
-    print(circuit_lens)
-    answer = 1
-    for n in circuit_lens[:3]:
-        print(n)
-        answer *= n
-    print(answer)
 
 
 if __name__ == "__main__":
