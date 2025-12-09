@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["numpy>=2.3.5"]
+dependencies = ["matplotlib>=3.10.7", "numpy>=2.3.5"]
 
 [tool.uv.build-backend]
 module-name = "adventofcode2025"
@@ -26,3 +26,4 @@ day5 = "adventofcode2025.day5.main:main"
 day6 = "adventofcode2025.day6.main:main"
 day7 = "adventofcode2025.day7.main:main"
 day8 = "adventofcode2025.day8.main:main"
+day9 = "adventofcode2025.day9.main:main"
